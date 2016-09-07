@@ -54,6 +54,16 @@ class TestGroupBy(unittest.TestCase):
         grouped = GroupBy(orders, [lambda o: o.date.year > 2013])
         self.assertEqual(grouped[False][0], orders[0])
 
+    def test_iter(self):
+        def add_to_group(group, obj):
+            return {
+                True: orders[1:],
+                False: [orders[0]],
+            }
+        GroupBy._build_add_to_group = Mock(return_value=add_to_group)
+        grouped = GroupBy(orders, [lambda o: o.date.year > 2013])
+        self.assertEqual(sorted(list(grouped)), [False, True])
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -27,3 +27,6 @@ class GroupBy:
 
     def __getitem__(self, bucket):
         return self._group[bucket]
+
+    def __iter__(self):
+        return self._group.__iter__()
