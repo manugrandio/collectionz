@@ -24,3 +24,6 @@ class GroupBy:
             group[bucket].append(obj)
             return group
         return add_to_group
+
+    def __getitem__(self, bucket):
+        return self._group[bucket]
