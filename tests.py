@@ -16,7 +16,7 @@ orders = [
 
 
 class TestGroupBy(unittest.TestCase):
-    def test_build_group_by(self):
+    def test_groupby_init(self):
         def add_to_group(group, obj):
             return {
                 True: orders[1:],
