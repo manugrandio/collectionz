@@ -46,3 +46,6 @@ class GroupBy:
             return len(self._group)
         else:
             return sum(map(len, self._group.values()))
+
+    def __eq__(self, obj):
+        return self._group == obj
