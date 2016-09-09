@@ -64,6 +64,12 @@ class TestGroupBy(unittest.TestCase):
         grouped = GroupBy(orders, [lambda o: o.date.year > 2013])
         self.assertEqual(sorted(list(grouped)), [False, True])
 
+    def test_add_object(self):
+        grouped = GroupBy(orders, [lambda o: o.date.year > 2013])
+        order = Order(date(2012, 9, 1), 'kate@mail.com', 'Toy')
+        grouped.add(order)
+        self.assertEqual(grouped[False][1], order)
+
 
 if __name__ == '__main__':
     unittest.main()

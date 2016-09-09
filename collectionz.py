@@ -30,3 +30,13 @@ class GroupBy:
 
     def __iter__(self):
         return self._group.__iter__()
+
+    def add(self, obj):
+        self._add(obj, self._groupers)
+
+    def _add(self, obj, groupers):
+        if not groupers:
+            self._group.append(obj)
+        else:
+            bucket = groupers[0](obj)
+            self._group[bucket]._add(obj, groupers[1:])
