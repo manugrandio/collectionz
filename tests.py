@@ -70,6 +70,10 @@ class TestGroupBy(unittest.TestCase):
         grouped.add(order)
         self.assertEqual(grouped[False][1], order)
 
+    def test_len(self):
+        grouped = GroupBy(orders, [lambda o: o.date.year > 2013])
+        self.assertEqual(len(grouped), len(orders))
+
 
 if __name__ == '__main__':
     unittest.main()

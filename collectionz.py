@@ -40,3 +40,9 @@ class GroupBy:
         else:
             bucket = groupers[0](obj)
             self._group[bucket]._add(obj, groupers[1:])
+
+    def __len__(self):
+        if type(self._group) is list:
+            return len(self._group)
+        else:
+            return sum(map(len, self._group.values()))
