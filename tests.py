@@ -91,6 +91,12 @@ class TestGroupBy(unittest.TestCase):
             [orders[0]], orders[1:])
         self.assertEqual(repr(grouped), grouped_repr)
 
+    def test_add_grouper(self):
+        grouped = GroupBy(orders, [lambda o: o.date.year > 2013])
+        grouper = lambda order: order.date.year
+        grouped.add_grouper(grouper)
+        self.assertEqual(grouped[True][2016][0], orders[2])
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

@@ -42,6 +42,13 @@ class GroupBy:
             bucket = groupers[0](obj)
             self._group[bucket]._add(obj, groupers[1:])
 
+    def add_grouper(self, grouper):
+        if type(self._group) is list:
+            self._group = GroupBy(self._group, [grouper])
+        else:
+            for bucket in self:
+                self[bucket].add_grouper(grouper)
+
     def __getitem__(self, bucket):
         return self._group[bucket]
 
