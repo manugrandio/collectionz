@@ -56,3 +56,6 @@ class GroupBy:
 
     def __eq__(self, obj):
         return self._group == obj
+
+    def __repr__(self):
+        return repr(self._group)

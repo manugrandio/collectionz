@@ -85,6 +85,12 @@ class TestGroupBy(unittest.TestCase):
         grouped.process(len)
         self.assertEqual(grouped[True], 3)
 
+    def test_repr(self):
+        grouped = GroupBy(orders, [lambda o: o.date.year > 2013])
+        grouped_repr = '{{False: {0}, True: {1}}}'.format(
+            [orders[0]], orders[1:])
+        self.assertEqual(repr(grouped), grouped_repr)
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
