@@ -75,8 +75,9 @@ class TestGroupBy(unittest.TestCase):
         self.assertEqual(len(grouped), len(orders))
 
     def test_eq(self):
-        grouped1 = GroupBy(orders, [lambda o: o.date.year > 2013])
-        grouped2 = GroupBy(orders[1:] + [orders[0]], [lambda o: o.date.year > 2013])
+        groupers = [lambda o: o.date.year > 2013]
+        grouped1 = GroupBy(orders, groupers)
+        grouped2 = GroupBy(orders[1:] + [orders[0]], groupers)
         self.assertEqual(grouped1, grouped2)
 
 
