@@ -80,6 +80,11 @@ class TestGroupBy(unittest.TestCase):
         grouped2 = GroupBy(orders[1:] + [orders[0]], groupers)
         self.assertEqual(grouped1, grouped2)
 
+    def test_process(self):
+        grouped = GroupBy(orders, [lambda o: o.date.year > 2013])
+        grouped.process(len)
+        self.assertEqual(grouped[True], 3)
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

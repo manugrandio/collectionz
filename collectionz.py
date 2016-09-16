@@ -25,6 +25,13 @@ class GroupBy:
             return group
         return add_to_group
 
+    def process(self, processor):
+        if type(self._group) is list:
+            self._group = processor(self._group)
+        else:
+            for bucket in self._group:
+                self._group[bucket].process(processor)
+
     def __getitem__(self, bucket):
         return self._group[bucket]
 
