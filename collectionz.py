@@ -32,12 +32,6 @@ class GroupBy:
             for bucket in self._group:
                 self._group[bucket].process(processor)
 
-    def __getitem__(self, bucket):
-        return self._group[bucket]
-
-    def __iter__(self):
-        return self._group.__iter__()
-
     def add(self, obj):
         self._add(obj, self._groupers)
 
@@ -47,6 +41,12 @@ class GroupBy:
         else:
             bucket = groupers[0](obj)
             self._group[bucket]._add(obj, groupers[1:])
+
+    def __getitem__(self, bucket):
+        return self._group[bucket]
+
+    def __iter__(self):
+        return self._group.__iter__()
 
     def __len__(self):
         if type(self._group) is list:
