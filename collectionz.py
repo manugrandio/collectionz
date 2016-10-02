@@ -66,3 +66,9 @@ class GroupBy:
 
     def __repr__(self):
         return repr(self._group)
+
+
+class CounterBy(GroupBy):
+    def __init__(self, items, by):
+        super(CounterBy, self).__init__(items, [by])
+        self.process(len)

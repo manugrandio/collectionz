@@ -3,7 +3,7 @@ from unittest.mock import Mock
 from collections import namedtuple, defaultdict
 from datetime import date
 
-from collectionz import GroupBy
+from collectionz import GroupBy, CounterBy
 
 
 Order = namedtuple('Order', 'date, email, product')
@@ -96,6 +96,16 @@ class TestGroupBy(unittest.TestCase):
         grouper = lambda order: order.date.year
         grouped.add_grouper(grouper)
         self.assertEqual(grouped[True][2016][0], orders[2])
+
+
+class TestCounterBy(unittest.TestCase):
+    def test_init(self):
+        """
+        Create a 'CounterBy' object with 'orders' and assert it has two
+        orders with email 'mary@mail.com'.
+        """
+        counter_by = CounterBy(orders, lambda o: o.email)
+        self.assertEqual(counter_by['mary@mail.com'], 2)
 
 
 if __name__ == '__main__':
