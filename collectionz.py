@@ -12,8 +12,8 @@ class GroupBy:
             add_to_group = self._build_add_to_group(self._groupers[0])
             grouped = reduce(add_to_group, objects, defaultdict(list))
             self._group = {
-                bucket: GroupBy(grouped[bucket], self._groupers[1:])
-                for bucket in grouped}
+                bucket: GroupBy(objs, self._groupers[1:])
+                for bucket, objs in grouped.items()}
 
     def _build_add_to_group(self, grouper):
         def add_to_group(group, obj):
