@@ -19,8 +19,8 @@ class GroupBy:
         def add_to_group(group, obj):
             bucket = grouper(obj)
             if not isinstance(bucket, Hashable):
-                error_tpl = 'Value returned by function "%s" is not hashable'
-                raise Exception(error_tpl % grouper.__name__)
+                error_tpl = 'Value returned by function "{}" is not hashable'
+                raise Exception(error_tpl.format(grouper.__name__))
             group[bucket].append(obj)
             return group
         return add_to_group
