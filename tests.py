@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 from collections import namedtuple, defaultdict
 from datetime import date
 
@@ -16,13 +16,15 @@ orders = [
 
 
 class TestGroupBy(unittest.TestCase):
-    def test_groupby_init(self):
+
+    @patch('collectionz.GroupBy._build_add_to_group')
+    def test_groupby_init(self, build_add_to_group_mock):
         def add_to_group(group, obj):
             return {
                 True: orders[1:],
                 False: [orders[0]],
             }
-        GroupBy._build_add_to_group = Mock(return_value=add_to_group)
+        build_add_to_group_mock.return_value = add_to_group
         grouped = GroupBy(orders, [lambda o: o.date.year > 2013])
         self.assertEqual(grouped._group[False]._group[0], orders[0])
 
@@ -44,23 +46,25 @@ class TestGroupBy(unittest.TestCase):
         msg = 'Value returned by function "a_grouper" is not hashable'
         self.assertEqual(str(manager.exception), msg)
 
-    def test_get_item(self):
+    @patch('collectionz.GroupBy._build_add_to_group')
+    def test_get_item(self, build_add_to_group_mock):
         def add_to_group(group, obj):
             return {
                 True: orders[1:],
                 False: [orders[0]],
             }
-        GroupBy._build_add_to_group = Mock(return_value=add_to_group)
+        build_add_to_group_mock.return_value = add_to_group
         grouped = GroupBy(orders, [lambda o: o.date.year > 2013])
         self.assertEqual(grouped[False][0], orders[0])
 
-    def test_iter(self):
+    @patch('collectionz.GroupBy._build_add_to_group')
+    def test_iter(self, build_add_to_group_mock):
         def add_to_group(group, obj):
             return {
                 True: orders[1:],
                 False: [orders[0]],
             }
-        GroupBy._build_add_to_group = Mock(return_value=add_to_group)
+        build_add_to_group_mock.return_value = add_to_group
         grouped = GroupBy(orders, [lambda o: o.date.year > 2013])
         self.assertEqual(sorted(list(grouped)), [False, True])
 
@@ -84,6 +88,28 @@ class TestGroupBy(unittest.TestCase):
         grouped = GroupBy(orders, [lambda o: o.date.year > 2013])
         grouped.process(len)
         self.assertEqual(grouped[True], 3)
+
+    def test_process_with(self):
+        orders = [
+            Order(date(2013, 3, 4), 'carl@mail.com', 'Computer'),
+            Order(date(2014, 2, 20), 'mary@mail.com', 'Lamp'),
+            Order(date(2016, 7, 1), 'eggs@mail.com', 'Desk'),
+            Order(date(2016, 2, 12), 'mary@mail.com', 'TV'),
+        ]
+        grouped = GroupBy(orders, [
+            lambda o: o.date.year > 2013,
+            lambda o: o.email,
+        ])
+
+        def with_fun(items, group, subgroup):
+            return group, subgroup, tuple(items)
+        res = {(i, j, tuple(k)) for i, j, k in grouped.process_with(with_fun)}
+        expected = {
+            (True, 'eggs@mail.com', (orders[2],)),
+            (True, 'mary@mail.com', (orders[1], orders[3])),
+            (False, 'carl@mail.com', (orders[0],)),
+        }
+        self.assertEqual(res, expected)
 
     def test_repr(self):
         grouped = GroupBy(orders, [lambda o: o.date.year > 2013])
