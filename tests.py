@@ -117,6 +117,12 @@ class TestGroupBy(unittest.TestCase):
             [orders[0]], orders[1:])
         self.assertEqual(repr(grouped), grouped_repr)
 
+    def test_str(self):
+        grouped = GroupBy(orders, [lambda o: o.date.year > 2013])
+        grouped_str = '{{False: {0}, True: {1}}}'.format(
+            [orders[0]], orders[1:])
+        self.assertEqual(str(grouped), grouped_str)
+
     def test_add_grouper(self):
         grouped = GroupBy(orders, [lambda o: o.date.year > 2013])
         grouper = lambda order: order.date.year

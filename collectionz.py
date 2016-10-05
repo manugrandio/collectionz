@@ -78,6 +78,8 @@ class GroupBy:
     def __repr__(self):
         return repr(self._group)
 
+    __str__ = __repr__
+
 
 class CounterBy(GroupBy):
     def __init__(self, items, by):
