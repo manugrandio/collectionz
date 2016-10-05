@@ -90,12 +90,6 @@ class TestGroupBy(unittest.TestCase):
         self.assertEqual(grouped[True], 3)
 
     def test_process_with(self):
-        orders = [
-            Order(date(2013, 3, 4), 'carl@mail.com', 'Computer'),
-            Order(date(2014, 2, 20), 'mary@mail.com', 'Lamp'),
-            Order(date(2016, 7, 1), 'eggs@mail.com', 'Desk'),
-            Order(date(2016, 2, 12), 'mary@mail.com', 'TV'),
-        ]
         grouped = GroupBy(orders, [
             lambda o: o.date.year > 2013,
             lambda o: o.email,
