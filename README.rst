@@ -1,1 +1,1 @@
-Some data structures in the style of Python's collections module.
+A set of utility data structures that (maybe) could fit in the ``collections`` package of Python's standard library.
