@@ -32,15 +32,12 @@ class GroupBy:
             for bucket in self._group:
                 self._group[bucket].process(processor)
 
-    def process_with(self, processor):
-        return self._process_with(processor)
-
-    def _process_with(self, processor, *buckets):
+    def process_with(self, processor, *buckets):
         if type(self._group) is list:
             return [processor(self._group, *buckets)]
         else:
             return reduce(lambda a, b: a + b, [
-                self[bucket]._process_with(processor, *(buckets + (bucket,)))
+                self[bucket].process_with(processor, *(buckets + (bucket,)))
                 for bucket in self])
 
     def add(self, obj):
