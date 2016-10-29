@@ -28,6 +28,15 @@ class TestGroupBy(unittest.TestCase):
         grouped = GroupBy(orders, [lambda o: o.date.year > 2013])
         self.assertEqual(grouped._group[False]._group[0], orders[0])
 
+    def test_groupby_init_many(self):
+        groupers = [lambda o: o.date.year > 2013, lambda o: o.email]
+        grouped = GroupBy(orders, groupers)
+        self.assertEqual(
+            grouped._group[False]._group['carl@mail.com']._group[0], orders[0])
+        self.assertEqual(
+            set(grouped._group[True]._group['mary@mail.com']),
+            {orders[1], orders[3]})
+
     def test_build_add_to_group(self):
         group_by_mock = Mock()
         add_to_group = GroupBy._build_add_to_group(
