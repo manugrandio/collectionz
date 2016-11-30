@@ -1,9 +1,59 @@
+"""
+A set of utility classes.
+"""
+
 from functools import reduce
 from collections import defaultdict
 from collections.abc import Hashable
 
 
 class GroupBy:
+    """
+    Create objects hierarchy by grouping by a list of functions/groupers.
+    Objects are grouped by first grouper and then, within each group, by
+    the rest of groupers.
+
+    >>> from datetime import date
+    >>> from collections import namedtuple
+    >>> Order = namedtuple('Order', 'date, email, product')
+    >>> orders = [
+    ...     Order(date(2013, 3, 4), 'carl@mail.com', 'Computer'),
+    ...     Order(date(2014, 2, 20), 'mary@mail.com', 'Lamp'),
+    ...     Order(date(2016, 7, 1), 'eggs@mail.com', 'Desk'),
+    ...     Order(date(2016, 2, 12), 'mary@mail.com', 'TV'),
+    ... ]
+    >>> groupers = [lambda o: o.date.year > 2013, lambda o: o.email]
+    >>> GroupBy(orders, groupers)
+    ... {
+    ...     False: {
+    ...         'carl@mail.com': [
+    ...             Order(
+    ...                 date=datetime.date(2013, 3, 4),
+    ...                 email='carl@mail.com',
+    ...                 product='Computer')
+    ...         ]
+    ...     },
+    ...     True: {
+    ...         'mary@mail.com': [
+    ...             Order(
+    ...                 date=datetime.date(2014, 2, 20),
+    ...                 email='mary@mail.com',
+    ...                 product='Lamp'),
+    ...             Order(
+    ...                 date=datetime.date(2016, 2, 12),
+    ...                 email='mary@mail.com',
+    ...                 product='TV')
+    ...         ],
+    ...         'eggs@mail.com': [
+    ...             Order(
+    ...                 date=datetime.date(2016, 7, 1),
+    ...                 email='eggs@mail.com',
+    ...                 product='Desk')
+    ...         ]
+    ...     }
+    ... }
+    """
+
     def __init__(self, objects, groupers):
         self._groupers = groupers
         if not self._groupers:
