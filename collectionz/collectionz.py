@@ -66,6 +66,9 @@ class GroupBy:
                 for bucket, objs in grouped.items()}
 
     def _build_add_to_group(self, grouper):
+        """
+        Build function that will add 'obj' to a 'group' by using 'grouper'.
+        """
         def add_to_group(group, obj):
             bucket = grouper(obj)
             if not isinstance(bucket, Hashable):
@@ -76,6 +79,10 @@ class GroupBy:
         return add_to_group
 
     def process(self, processor):
+        """
+        Process every 'leaf' (list of objects that have been grouped)
+        with 'processor' in-place.
+        """
         if type(self._group) is list:
             self._group = processor(self._group)
         else:
@@ -83,6 +90,11 @@ class GroupBy:
                 self._group[bucket].process(processor)
 
     def process_with(self, processor, *buckets):
+        """
+        Apply 'processor' to each group and return a list with the results.
+        'processor' receives a group as a first argument and the rest of
+        arguments are the "buckets" where groups are placed.
+        """
         if type(self._group) is list:
             return [processor(self._group, *buckets)]
         else:
@@ -91,6 +103,9 @@ class GroupBy:
                 for bucket in self])
 
     def add(self, obj):
+        """
+        Add 'obj' to group by taking into account its groupers.
+        """
         self._add(obj, self._groupers)
 
     def _add(self, obj, groupers):
@@ -101,6 +116,9 @@ class GroupBy:
             self._group[bucket]._add(obj, groupers[1:])
 
     def add_grouper(self, grouper):
+        """
+        Create new sub-groups in each existing group with 'grouper'.
+        """
         if type(self._group) is list:
             self._group = GroupBy(self._group, [grouper])
         else:
@@ -114,6 +132,9 @@ class GroupBy:
         return self._group.__iter__()
 
     def __len__(self):
+        """
+        Get total number of items in the GroupBy object.
+        """
         if type(self._group) is list:
             return len(self._group)
         else:
@@ -129,6 +150,13 @@ class GroupBy:
 
 
 class CounterBy(GroupBy):
+    """
+    Like 'collections.Counter', but items are counted by applying them the
+    'by' function.
+
+    >>> CounterBy(range(10), lambda item: item < 5)
+    ... {False: 5, True: 5}
+    """
     def __init__(self, items, by):
         super(CounterBy, self).__init__(items, [by])
         self.process(len)
